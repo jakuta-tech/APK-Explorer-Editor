@@ -207,8 +207,8 @@ public class APKExplorer {
                 values.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
                 values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
                 Uri uri = context.getContentResolver().insert(MediaStore.Files.getContentUri("external"), values);
-                OutputStream imageOutStream = context.getContentResolver().openOutputStream(uri);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, imageOutStream);
+                OutputStream imageOutStream = context.getContentResolver().openOutputStream(Objects.requireNonNull(uri));
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, Objects.requireNonNull(imageOutStream));
                 imageOutStream.close();
             } else {
                 File image = new File(dest);
@@ -237,6 +237,21 @@ public class APKExplorer {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    public static String getFormattedFileSize(File file) {
+        long sizeInByte = file.length();
+        if (sizeInByte > 1024) {
+            long sizeInKB = sizeInByte / 1024;
+            long decimal = (sizeInKB - 1024) / 1024;
+            if (sizeInKB > 1024) {
+                return sizeInKB / 1024 + "." + decimal + " MB";
+            } else {
+                return sizeInKB + " KB";
+            }
+        } else {
+            return sizeInByte + " B";
+        }
     }
 
     private static void installAPKs(boolean exit, Activity activity) {
@@ -287,7 +302,9 @@ public class APKExplorer {
     }
 
     public static void exploreApps(String packageName, File apkFile, Uri uri, boolean exit, Activity activity) {
-        if (sCommonUtils.getString("decompileSetting", null, activity) == null) {
+        if (sFileUtils.exist(new File(activity.getCacheDir().getPath(), packageName != null ? packageName : apkFile.getName()))) {
+            new ExploreAPK(packageName, apkFile, uri, -1, activity).execute();
+        } else if (sCommonUtils.getString("decompileSetting", null, activity) == null) {
             new sSingleItemDialog(0, null, new String[] {
                     activity.getString(R.string.explore_options_simple),
                     activity.getString(R.string.explore_options_full)

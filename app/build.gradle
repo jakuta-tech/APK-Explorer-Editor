@@ -1,16 +1,21 @@
 apply plugin: 'com.android.application'
 
 android {
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
 
-    compileSdkVersion 33
-    buildToolsVersion '33.0.0'
+    compileSdk 34
     namespace 'com.apk.editor'
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 33
-        versionCode 28
-        versionName "v0.28"
+        targetSdk 34
+        versionCode 29
+        versionName "v0.29"
         vectorDrawables.useSupportLibrary = true
         testFunctionalTest = false
         testHandleProfiling = false
@@ -26,7 +31,11 @@ android {
         }
     }
 
-    flavorDimensions "release"
+    buildFeatures {
+        buildConfig = true
+    }
+
+    flavorDimensions.add("release")
     productFlavors {
         play {
             applicationId "com.apk.explorer"
@@ -45,10 +54,10 @@ android {
 
 dependencies {
     implementation 'com.android.tools.build:apksig:8.1.4'
-    implementation 'com.github.apk-editor:aXML:743632cf62'
-    implementation 'com.github.sunilpaulmathew:CrashReporter:4f24aa11c2'
+    implementation 'com.github.apk-editor:aXML:0381822ba2'
+    implementation 'com.github.sunilpaulmathew:CrashReporter:6b6c74abaa'
 
-    def sCommon_Version = '8c5666a002'
+    def sCommon_Version = 'efc9dce669'
     implementation "com.github.sunilpaulmathew.sCommon:apkutils:${sCommon_Version}"
     implementation "com.github.sunilpaulmathew.sCommon:adapters:${sCommon_Version}"
     implementation "com.github.sunilpaulmathew.sCommon:credits:${sCommon_Version}"
@@ -59,7 +68,7 @@ dependencies {
     implementation "com.github.sunilpaulmathew.sCommon:themeutils:${sCommon_Version}"
     implementation "com.github.sunilpaulmathew.sCommon:translatorutils:${sCommon_Version}"
 
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'net.lingala.zip4j:zip4j:2.11.5'
     implementation 'org.smali:baksmali:2.5.2'
     implementation 'org.smali:smali:2.5.2'
